@@ -46,18 +46,31 @@
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px}
   .pad{padding:16px}
 
-  /* Vídeo */
-  .video{display:grid;overflow:hidden}
-  .player{aspect-ratio:16/9;background:#0f172a}
+  /* Vídeo (layout inspirado no YouTube mobile) */
+  .page > *{min-width:0}
+  .video{display:grid;margin:0 -16px;background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);scroll-margin-top:62px}
+  .player{aspect-ratio:16/9;width:100%;background:#000}
   .player iframe{width:100%;height:100%;border:0;display:block}
-  .vmeta{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;font-size:.85rem;border-bottom:1px solid var(--line)}
-  .now{font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .ext{white-space:nowrap;color:var(--accent);font-weight:700;text-decoration:none}
-  .playlist{list-style:none;margin:0;padding:8px;display:grid;gap:6px}
-  .pl{display:block;width:100%;min-height:44px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font:inherit;color:inherit;text-decoration:none;cursor:pointer}
-  .pl small{display:block;color:var(--muted);font-size:.75rem}
-  .pl b{display:block;font-size:.9rem;line-height:1.3}
-  .pl[aria-current="true"]{border-color:var(--accent);background:var(--accent-soft)}
+  .vinfo{padding:12px 16px 14px;display:grid;gap:4px}
+  .vinfo .now{font-size:1.02rem;line-height:1.3;font-weight:700;overflow-wrap:anywhere}
+  .vchan{font-size:.85rem;color:var(--muted)}
+  .actions{margin-top:8px;display:flex;flex-wrap:wrap;gap:8px}
+  .ext{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-size:.85rem;font-weight:700;text-decoration:none}
+  .upnext{padding:12px 16px 18px;border-top:1px solid var(--line);background:#f8fafc}
+  .upnext h4{font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+  .playlist{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+  .pl{display:grid;gap:8px;width:100%;margin:0;padding:0;border:0;background:none;text-align:left;font:inherit;color:inherit;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .thumb{position:relative;display:block;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#1e293b,#0f172a)}
+  .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .ph{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(255,255,255,.18)}
+  .ph::after{content:"";position:absolute;left:17px;top:13px;border-style:solid;border-width:9px 0 9px 15px;border-color:transparent transparent transparent #fff}
+  .badge{position:absolute;left:8px;top:8px;max-width:calc(100% - 16px);background:rgba(15,23,42,.82);color:#fff;font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:6px}
+  .playing{display:none;position:absolute;right:8px;bottom:8px;background:var(--accent);color:#fff;font-size:.7rem;font-weight:800;padding:3px 8px;border-radius:6px}
+  .pl[aria-current="true"] .thumb{outline:3px solid var(--accent);outline-offset:-3px}
+  .pl[aria-current="true"] .playing{display:block}
+  .ptxt{display:grid;gap:2px;min-width:0}
+  .ptxt b{font-size:.92rem;line-height:1.3;font-weight:700;overflow-wrap:anywhere}
+  .ptxt small{font-size:.78rem;color:var(--muted)}
 
   /* Exercícios */
   .sec{display:grid;gap:14px}
@@ -119,9 +132,16 @@
     .hero h2{font-size:1.8rem}
     h1{font-size:1.4rem}
   }
+  @media (min-width:520px){
+    .video{margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    .playlist{gap:12px}
+    .pl{grid-template-columns:150px minmax(0,1fr);gap:12px;align-items:start}
+  }
   @media (min-width:900px){
-    .video{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
-    .playlist{max-height:440px;overflow:auto;border-left:1px solid var(--line);align-content:start}
+    .video{grid-template-columns:minmax(0,1.8fr) minmax(300px,1fr);grid-template-areas:"player next" "info next"}
+    .player{grid-area:player}
+    .vinfo{grid-area:info}
+    .upnext{grid-area:next;border-top:0;border-left:1px solid var(--line);max-height:520px;overflow:auto}
   }
   @media (max-width:380px){
     .tab{font-size:.82rem}
@@ -163,12 +183,17 @@
       <p class="muted">Para números negativos, use o sinal − ou -. Pode usar vírgula ou ponto.</p>
       <button type="button" class="linkbtn" data-go="teoria" data-anchor="trabalho">Ver teoria e fórmulas →</button>
     </div>
-    <div class="card video" data-video="trabalho">
-      <div class="vmain">
-        <div class="player"></div>
-        <div class="vmeta"><span class="now"></span><a class="ext" target="_blank" rel="noopener noreferrer"></a></div>
+    <div class="video" data-video="trabalho">
+      <div class="player"></div>
+      <div class="vinfo">
+        <h3 class="now"></h3>
+        <p class="vchan"></p>
+        <div class="actions"><a class="ext" target="_blank" rel="noopener noreferrer"></a></div>
       </div>
-      <ul class="playlist"></ul>
+      <div class="upnext">
+        <h4>A seguir</h4>
+        <ul class="playlist"></ul>
+      </div>
     </div>
     <div class="stack" id="ex-trabalho"></div>
   </section>
@@ -182,12 +207,17 @@
       <p class="muted">Considere g = 10 m/s². Para números negativos, use o sinal − ou -.</p>
       <button type="button" class="linkbtn" data-go="teoria" data-anchor="peso">Ver teoria e fórmulas →</button>
     </div>
-    <div class="card video" data-video="peso">
-      <div class="vmain">
-        <div class="player"></div>
-        <div class="vmeta"><span class="now"></span><a class="ext" target="_blank" rel="noopener noreferrer"></a></div>
+    <div class="video" data-video="peso">
+      <div class="player"></div>
+      <div class="vinfo">
+        <h3 class="now"></h3>
+        <p class="vchan"></p>
+        <div class="actions"><a class="ext" target="_blank" rel="noopener noreferrer"></a></div>
       </div>
-      <ul class="playlist"></ul>
+      <div class="upnext">
+        <h4>A seguir</h4>
+        <ul class="playlist"></ul>
+      </div>
     </div>
     <div class="stack" id="ex-peso"></div>
   </section>
@@ -294,14 +324,30 @@
     ]
   };
 
+  function thumbUrl(v) {
+    if (v.kind === 'yt') return 'https://i.ytimg.com/vi/' + v.id + '/mqdefault.jpg';
+    if (v.kind === 'drive') return 'https://drive.google.com/thumbnail?id=' + v.id + '&sz=w480';
+    return '';
+  }
+
   function buildPlaylist(page) {
     var list = $('[data-video="' + page + '"] .playlist');
     list.innerHTML = VIDEOS[page].map(function (v, i) {
+      var img = thumbUrl(v);
+      var badge = v.badge || (v.kind === 'link' ? 'Abre em nova aba ↗' : '');
+      var thumb = '<span class="thumb"><span class="ph" aria-hidden="true"></span>' +
+        (img ? '<img src="' + img + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '') +
+        (badge ? '<span class="badge">' + badge + '</span>' : '') +
+        '<span class="playing">Reproduzindo</span></span>';
+      var text = '<span class="ptxt"><b>' + v.title + '</b><small>' + v.channel + '</small></span>';
       if (v.kind === 'link') {
-        return '<li><a class="pl" href="' + v.url + '" target="_blank" rel="noopener noreferrer"><small>' + v.channel + ' · abre em nova aba ↗</small><b>' + v.title + '</b></a></li>';
+        return '<li><a class="pl" href="' + v.url + '" target="_blank" rel="noopener noreferrer">' + thumb + text + '</a></li>';
       }
-      return '<li><button type="button" class="pl" data-play="' + page + ':' + i + '"><small>' + (v.badge ? v.badge + ' · ' : '') + v.channel + '</small><b>' + v.title + '</b></button></li>';
+      return '<li><button type="button" class="pl" data-play="' + page + ':' + i + '">' + thumb + text + '</button></li>';
     }).join('');
+    $$('.thumb img', list).forEach(function (im) {
+      im.addEventListener('error', function () { im.remove(); });
+    });
   }
 
   function play(page, i, auto) {
@@ -323,13 +369,14 @@
     f.referrerPolicy = 'strict-origin-when-cross-origin';
     player.appendChild(f);
     $('.now', box).textContent = v.title;
+    $('.vchan', box).textContent = v.channel;
     var a = $('.ext', box);
     a.href = ext;
     a.textContent = v.kind === 'drive' ? 'Abrir no Drive ↗' : 'Abrir no YouTube ↗';
     $$('.pl[data-play]', box).forEach(function (b) {
       b.setAttribute('aria-current', b.getAttribute('data-play') === page + ':' + i ? 'true' : 'false');
     });
-    if (auto) player.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (auto) box.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   /* ===================== DESENHOS (SVG) ===================== */
